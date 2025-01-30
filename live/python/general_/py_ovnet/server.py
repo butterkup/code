@@ -4,20 +4,11 @@ import pickle, contextlib
 from pathlib import Path
 
 
-@contextlib.contextmanager
-def remove_path(path: str | Path):
-    yield
-    print("Removing: %s" % path)
-    Path(path).unlink(True)
-
 people: aio.Queue[Person]
 
 async def introduce_people():
-    while True:
-        person = await people.get()
+    while person := await people.get():
         people.task_done()
-        if person is None:
-            break
         print("Introducing %s" % person.name)
         print(person.introduce_self())
         await aio.sleep(2)
@@ -43,12 +34,11 @@ async def main():
     task = aio.create_task(introduce_people())
     people = aio.Queue()
     server = await aio.start_unix_server(intro_person, path)
-    with remove_path(path):
-        try:
-            async with server:
-                await server.serve_forever()
-        except aio.CancelledError as e:
-            print("Stopped Serving: %s" % e.__class__.__name__)
+    try:
+        async with server:
+            await server.serve_forever()
+    except aio.CancelledError as e:
+        print("Stopped Serving: %s" % e.__class__.__name__)
     await people.join()
     people.put_nowait(None) # type: ignore
     await task
