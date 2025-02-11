@@ -44,7 +44,7 @@ int main() {
   struct pool_t pool;
   struct factorial_args fargs = {.n = 12, .result = 0};
   task_t factorial_task = {.arg = &fargs, .function = factorial_function};
-  pool_init(&pool, 4);
+  pool_init(&pool, 5);
   pool_push(&pool, &create_task("Joan Megatron      [1]", 5, 1));
   pool_push(&pool, &create_task("Simon Brooks     [1]", 7, 1));
   pool_push(&pool, &create_task("Anne Megatron      [1]", 6, 1));
@@ -61,7 +61,7 @@ int main() {
   pool_push(&pool, &create_task("Anne Megatron      [3]", 6, 1));
   pool_push(&pool, &create_task("Bernard Keehl    [3]", 4, 1));
   pool_push(&pool, &create_task("David Lorein    [3]", 6, 1));
-  pool_destroy_wait(&pool);
+  pool_wait_destroy(&pool);
   printf("factorial(%d) = %d\n", fargs.n, fargs.result);
 }
 

@@ -38,5 +38,5 @@ void pool_wait(struct pool_t *pool);
 /* Destroy the pool with all pending tasks. */
 void pool_destroy(struct pool_t *pool);
 /* Wait all pending tasks to be executed and destroy the pool. */
-void pool_destroy_wait(struct pool_t *pool);
+void pool_wait_destroy(struct pool_t *pool);
 

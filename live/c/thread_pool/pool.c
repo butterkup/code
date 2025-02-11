@@ -31,8 +31,7 @@ static void queue_destroy(struct queue_t *queue) {
 
 static void queue_push(struct queue_t *queue, task_t *task) {
   queue->head->tasks[queue->hidx] = *task;
-  queue->hidx++;
-  if (queue->hidx == MAX_QNODE_PACK) {
+  if (++queue->hidx == MAX_QNODE_PACK) {
     queue->head = node_alloc(queue->head);
     queue->hidx = 0;
   }
@@ -44,8 +43,7 @@ static int queue_empty(struct queue_t *queue) {
 
 static task_t queue_pop(struct queue_t *queue) {
   task_t task = queue->tail->tasks[queue->tidx];
-  queue->tidx++;
-  if (queue->tidx == MAX_QNODE_PACK) {
+  if (++queue->tidx == MAX_QNODE_PACK) {
     queue->tail = node_free(queue->tail);
     queue->tidx = 0;
   }
@@ -123,7 +121,7 @@ void pool_destroy(struct pool_t *pool) {
   queue_destroy(&pool->taskq);
 }
 
-void pool_destroy_wait(struct pool_t *pool) {
+void pool_wait_destroy(struct pool_t *pool) {
   pool_wait(pool);
   pool_destroy(pool);
 }
